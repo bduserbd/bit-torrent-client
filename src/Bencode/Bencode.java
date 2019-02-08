@@ -1,7 +1,5 @@
 package Bencode;
 
-import jdk.jshell.spi.ExecutionControl;
-
 import java.util.ArrayList;
 
 public class Bencode
@@ -12,7 +10,7 @@ public class Bencode
 
         if (Character.isDigit(c))
         {
-            throw new UnsupportedOperationException("String type parsing not implemented");
+            return BencodeString.Parse(buffer);
         }
         else
         {

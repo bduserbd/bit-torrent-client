@@ -32,11 +32,11 @@ public final class BitTorrentFile
 
     private void Parse() throws IOException
     {
-        byte binary[] = readFileCotent();
+        byte[] binary = readFileCotent();
 
         System.out.println(String.format("Parsing `%s' (%d bytes)", getPath(), binary.length));
 
-        Bencode.parse(new BencodeBuffer("i35ei1771ei348917e".getBytes()));
+        Bencode.parse(new BencodeBuffer("i35e9:Somethingi1771e0:i348917e4:bbbb".getBytes()));
     }
 
     public String getPath()
