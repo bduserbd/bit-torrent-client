@@ -19,11 +19,12 @@ public class Bencode
                 case 'i':
                     return BencodeInteger.Parse(buffer);
                 case 'l':
-                    throw new UnsupportedOperationException("List type parsing not implemented");
+                    return BencodeList.Parse(buffer);
                 case 'd':
                     throw new UnsupportedOperationException("Dictionary type parsing not implemented");
                 default:
-                    throw new IllegalArgumentException(String.format("Unknown Bencode type %c", c));
+                    throw new IllegalArgumentException(String.format("Unknown Bencode type `%c' (index %d)",
+                            c, buffer.getIndex()));
             }
         }
     }

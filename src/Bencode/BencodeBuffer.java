@@ -77,4 +77,23 @@ public class BencodeBuffer
         byte[] string = Arrays.copyOfRange(buffer, start, start + length);
         return new String(string);
     }
+
+    BencodeList getList()
+    {
+        if (getCurrentByte() != 'l')
+            throw new IllegalArgumentException("Invalid Bencode type (expected list)");
+
+        incIndex();
+
+        BencodeList list = new BencodeList();
+
+        while (getCurrentByte() != 'e')
+        {
+            list.add(Bencode.parseSingleItem(this));
+        }
+
+        incIndex();
+
+        return list;
+    }
 }

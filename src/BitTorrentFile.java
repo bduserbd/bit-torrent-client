@@ -36,7 +36,7 @@ public final class BitTorrentFile
 
         System.out.println(String.format("Parsing `%s' (%d bytes)", getPath(), binary.length));
 
-        Bencode.parse(new BencodeBuffer("i35e9:Somethingi1771e0:i348917e4:bbbb".getBytes()));
+        Bencode.parse(new BencodeBuffer("li35e9:Somethingi1771eel0:li348917e4:bbbbee".getBytes()));
     }
 
     public String getPath()
