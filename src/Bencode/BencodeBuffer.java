@@ -5,12 +5,17 @@ import java.util.Arrays;
 public class BencodeBuffer
 {
     private int index;
-    private byte buffer[];
+    private byte[] buffer;
 
-    public BencodeBuffer(byte buffer[])
+    public BencodeBuffer(byte[] buffer)
     {
         this.index = 0;
         this.buffer = buffer;
+    }
+
+    byte getCurrentByte()
+    {
+        return buffer[index];
     }
 
     int getIndex()
@@ -33,18 +38,23 @@ public class BencodeBuffer
         index++;
     }
 
-    int getEndIndex()
+    int getEndIndex(char end)
     {
         int i;
 
-        for (i = getIndex(); buffer[i] != 'e'; i++) ;
+        for (i = getIndex(); buffer[i] != end; i++) ;
 
         return i;
     }
 
-    byte getCurrentByte()
+    private int getIntegerEndMark(char end)
     {
-        return buffer[index];
+        int i = getIndex(), e = getEndIndex(end);
+
+        setIndex(e + 1);
+
+        byte[] number = Arrays.copyOfRange(buffer, i, e);
+        return Integer.parseInt(new String(number));
     }
 
     int getInteger()
@@ -54,11 +64,36 @@ public class BencodeBuffer
 
         incIndex();
 
-        int i = getIndex(), e = getEndIndex();
+        return getIntegerEndMark('e');
+    }
 
-        setIndex(e + 1);
+    String getString()
+    {
+        int length = getIntegerEndMark(':');
+        int start = getIndex();
 
-        byte number[] = Arrays.copyOfRange(buffer, i, e);
-        return Integer.parseInt(new String(number));
+        setIndex(start + length);
+
+        byte[] string = Arrays.copyOfRange(buffer, start, start + length);
+        return new String(string);
+    }
+
+    BencodeList getList()
+    {
+        if (getCurrentByte() != 'l')
+            throw new IllegalArgumentException("Invalid Bencode type (expected list)");
+
+        incIndex();
+
+        BencodeList list = new BencodeList();
+
+        while (getCurrentByte() != 'e')
+        {
+            list.add(Bencode.parseSingleItem(this));
+        }
+
+        incIndex();
+
+        return list;
     }
 }
